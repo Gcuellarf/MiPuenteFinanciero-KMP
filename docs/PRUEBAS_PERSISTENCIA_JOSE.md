@@ -10,7 +10,7 @@
 - **JDK / Runtime:** Java 21 LTS (Oracle Corporation 21.0.2+13-LTS-58)
 - **Gradle:** 8.14.3
 - **Kotlin:** 2.2.20 / Compose Multiplatform (KMP)
-- **Motor de persistencia:** SQLite nativo en Android y sql.js en Web, mediante la interfaz compartida `SqlStore` (no se utiliza Room)
+- **Motor de persistencia:** SQLite nativo en Android y sql.js en Web, mediante la interfaz compartida `SqlStore` 
 
 ---
 
