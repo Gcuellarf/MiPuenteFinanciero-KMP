@@ -26,15 +26,16 @@ import kotlinx.coroutines.launch
     Card(Modifier.fillMaxWidth(),shape=RoundedCornerShape(26.dp),colors=CardDefaults.cardColors(containerColor=MaterialTheme.colorScheme.primaryContainer)) {
         Column(Modifier.padding(22.dp),verticalArrangement=Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically) {
-                Text("Saldo total · ${a.label}",style=MaterialTheme.typography.titleMedium); TextButton(onClick={vm.profile(d.profile.copy(balanceVisible=!d.profile.balanceVisible))}) { Text(if(d.profile.balanceVisible) "Ocultar" else "Mostrar") }
+                Text("Saldo disponible · ${a.label}",style=MaterialTheme.typography.titleMedium); TextButton(onClick={vm.profile(d.profile.copy(balanceVisible=!d.profile.balanceVisible))}) { Text(if(d.profile.balanceVisible) "Ocultar" else "Mostrar") }
             }
             Text(if(d.profile.balanceVisible) cop(d.balance(a)) else "••••••••",style=MaterialTheme.typography.headlineLarge,fontWeight=FontWeight.Bold)
-            Text("Información almacenada localmente",style=MaterialTheme.typography.bodySmall)
+            Text("Reservado en metas: ${if(d.profile.balanceVisible) cop(d.reserved(a)) else "••••••"}",style=MaterialTheme.typography.bodySmall)
+            Text("Disponible + reservado: ${if(d.profile.balanceVisible) cop(d.balance(a)+d.reserved(a)) else "••••••"}",style=MaterialTheme.typography.bodySmall)
         }
     }
     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(10.dp)) {
-        Panel("Entradas",Modifier.weight(1f)) { Text(if(d.profile.balanceVisible) cop(d.active().filter{it.kind==Kind.INCOME}.sumOf{it.amount}) else "••••••",color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold) }
-        Panel("Salidas",Modifier.weight(1f)) { Text(if(d.profile.balanceVisible) cop(d.active().filter{it.kind==Kind.EXPENSE}.sumOf{it.amount}) else "••••••",color=MaterialTheme.colorScheme.error,fontWeight=FontWeight.Bold) }
+        Panel("Entradas",Modifier.weight(1f)) { Text(if(d.profile.balanceVisible) cop(d.active().filter{it.kind==Kind.INCOME&&!it.isGoalSaving}.sumOf{it.amount}) else "••••••",color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold) }
+        Panel("Salidas",Modifier.weight(1f)) { Text(if(d.profile.balanceVisible) cop(d.active().filter{it.kind==Kind.EXPENSE&&!it.isGoalSaving}.sumOf{it.amount}) else "••••••",color=MaterialTheme.colorScheme.error,fontWeight=FontWeight.Bold) }
     }
     d.goals.firstOrNull()?.let { g -> Panel("Meta de ahorro") { GoalSummary(g); TextButton(onClick={vm.select(Screen.GOALS)}) { Text("Ver todas las metas →") } } }
     Panel("Acciones rápidas") { Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {

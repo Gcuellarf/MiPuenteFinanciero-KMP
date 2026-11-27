@@ -6,15 +6,21 @@ enum class Account(val label: String, val opening: Long) {
 enum class Kind(val label: String) { INCOME("Ingreso"), EXPENSE("Gasto") }
 data class Movement(val id: Long, val title: String, val category: String, val amount: Long,
     val kind: Kind, val account: Account, val date: String, val transfer: String = "") {
+    val isGoalSaving get() = transfer == "goal-saving"
     val signed get() = if (kind == Kind.INCOME) amount else -amount
 }
-data class Goal(val id: Long, val name: String, val saved: Long, val target: Long) {
+data class Goal(val id: Long, val name: String, val saved: Long, val target: Long,
+    val personalReserved: Long = 0, val businessReserved: Long = 0) {
+    fun reserved(account: Account) = if (account == Account.PERSONAL) personalReserved else businessReserved
+    val reservedTotal get() = personalReserved + businessReserved
+    val previousSavings get() = saved - reservedTotal
     val progress get() = if (target > 0) (saved.toDouble() / target).coerceIn(0.0, 1.0).toFloat() else 0f
 }
 data class Profile(val name: String = "Alejandra", val account: Account = Account.PERSONAL,
     val balanceVisible: Boolean = true, val dark: Boolean = false)
 data class FinanceData(val movements: List<Movement>, val goals: List<Goal>, val profile: Profile) {
     fun balance(account: Account) = account.opening + movements.filter { it.account == account }.sumOf { it.signed }
+    fun reserved(account: Account) = goals.sumOf { it.reserved(account) }
     fun active() = movements.filter { it.account == profile.account }
 }
 const val MAX_AMOUNT = 999_999_999L
