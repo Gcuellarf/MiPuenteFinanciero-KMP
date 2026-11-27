@@ -88,5 +88,5 @@ A continuación se registra la matriz de ejecución basada en los escenarios de 
 
 ## 5. Declaración de Asistencia de IA
 Conforme a las pautas de transparencia académica e individual del microproyecto:
-- Se utilizó asistencia de inteligencia artificial (Antigravity Agent) para el formateo y estructuración de la documentación técnica, verificación de sintaxis de pruebas Kotlin y comandos de automatización Git/Gradle.
-- La conceptualización de las invariantes de dominio, validación del modelo de datos y revisión de aserciones fueron supervisadas y ejecutadas por el autor responsable de la persistencia.
+- Se utilizó asistencia de inteligencia artificial (Antigravity Agent) para el formateo y estructuración de la documentación técnica, verificación de sintaxis.
+- La conceptualización de las invariantes de dominio, validación del modelo de datos y revisión de aserciones fueron supervisadas y ejecutadas por Jose Luis Sanchez Lopez responsable de la persistencia.
