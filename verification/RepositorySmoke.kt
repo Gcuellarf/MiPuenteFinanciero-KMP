@@ -25,6 +25,15 @@ fun main(){
     try {
         Bridge(file.path).use { store ->
             val r=FinanceRepository(store);val initial=r.read();check(initial.balance(Account.PERSONAL)==2500000L);check(initial.balance(Account.BUSINESS)==2365000L);check(initial.movements.size==4)
+            val beforeRollback = r.read()
+            check(runCatching {
+                store.transaction {
+                    store.execute("INSERT OR REPLACE INTO preferences(key,value) VALUES (?,?)",
+                        listOf("name", "Temporal"))
+                    error("Rollback de prueba")
+                }
+            }.isFailure)
+            check(r.read() == beforeRollback)
             r.addMovement("Compra de prueba","Comida",50000,Kind.EXPENSE,Account.PERSONAL,"hoy")
             check(r.read().balance(Account.PERSONAL)==2450000L);val m=r.read().movements.first()
             r.editMovement(m,"Compra editada","Otros",20000,Kind.EXPENSE);check(r.read().balance(Account.PERSONAL)==2480000L)
