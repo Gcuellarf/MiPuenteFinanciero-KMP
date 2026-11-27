@@ -20,16 +20,16 @@ import co.edu.mipuente.kmp.presentation.FinanceViewModel
 import kotlinx.coroutines.launch
 
 @Composable internal fun Movements(vm:FinanceViewModel) {
-    var search by remember { mutableStateOf("") }; var filter by remember { mutableStateOf<Kind?>(null) }
+    var search by remember { mutableStateOf("") }; var filter by remember { mutableStateOf<Kind?>(null) }; var savingsOnly by remember { mutableStateOf(false) }
     var editing by remember { mutableStateOf<Movement?>(null) }; var deleting by remember { mutableStateOf<Movement?>(null) }
     Heading("Movimientos","Busca, filtra y revisa en qué se mueve tu plata")
     Accounts(vm); OutlinedTextField(search,{search=it},label={Text("Buscar movimiento o categoría")},singleLine=true,modifier=Modifier.fillMaxWidth())
-    Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) { listOf(null,Kind.INCOME,Kind.EXPENSE).forEach { k -> FilterChip(filter==k,{filter=k},label={Text(k?.label ?: "Todos")}) } }
-    val rows=vm.data.active().filter { (filter==null||it.kind==filter) && (it.title.contains(search,true)||it.category.contains(search,true)) }
+    Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)) { listOf(null,Kind.INCOME,Kind.EXPENSE).forEach { k -> FilterChip(!savingsOnly&&filter==k,{filter=k;savingsOnly=false},label={Text(k?.label ?: "Todos")}) }; FilterChip(savingsOnly,{savingsOnly=true;filter=null},label={Text("Ahorro")}) }
+    val rows=vm.data.active().filter { (if(savingsOnly) it.isGoalSaving else filter==null||(!it.isGoalSaving&&it.kind==filter)) && (it.title.contains(search,true)||it.category.contains(search,true)) }
     Text("${rows.size} movimientos",style=MaterialTheme.typography.labelLarge)
     if(rows.isEmpty()) Panel { Text("No hay resultados para este filtro.") }
     rows.forEach { m -> Panel { MovementLine(m,vm.data.profile.balanceVisible); Row(horizontalArrangement=Arrangement.spacedBy(6.dp)) {
-        if(m.transfer.isEmpty()) TextButton(onClick={editing=m}) { Text("Editar") }; TextButton(onClick={deleting=m}) { Text("Eliminar",color=MaterialTheme.colorScheme.error) }
+        if(m.isGoalSaving) Text("Gestionar desde Metas",style=MaterialTheme.typography.bodySmall) else { if(m.transfer.isEmpty()) TextButton(onClick={editing=m}) { Text("Editar") }; TextButton(onClick={deleting=m}) { Text("Eliminar",color=MaterialTheme.colorScheme.error) } }
     } } }
     editing?.let { m -> MovementDialog(m,onClose={editing=null},onSave={title,cat,amount,kind -> if(vm.edit(m,title,cat,amount,kind)) editing=null}) }
     deleting?.let { m -> Confirm("Eliminar movimiento",if(m.transfer.isEmpty()) "Se recalculará el saldo." else "Se eliminarán ambos registros de la transferencia.",{deleting=null},{vm.delete(m);deleting=null}) }

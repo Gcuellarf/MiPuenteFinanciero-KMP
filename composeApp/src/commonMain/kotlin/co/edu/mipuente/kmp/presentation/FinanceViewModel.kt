@@ -32,8 +32,9 @@ class FinanceViewModel(private val repository: FinanceRepository) {
     fun transfer(amount: Long) = change("Transferencia registrada") { repository.transfer(data.profile.account,amount,todayLabel()) }
     fun addGoal(name: String,target: Long) = change("Meta creada") { repository.addGoal(name,target) }
     fun editGoal(g: Goal,name: String,target: Long) = change("Meta actualizada") { repository.editGoal(g,name,target) }
-    fun contribute(g: Goal,amount: Long) = change("Aporte registrado") { repository.contribute(g,amount) }
-    fun deleteGoal(g: Goal) = change("Meta eliminada") { repository.deleteGoal(g) }
+    fun contribute(g: Goal,amount: Long,account: Account) = change("Ahorro reservado desde ${account.label}") { repository.contribute(g,amount,account,todayLabel()) }
+    fun withdraw(g: Goal,amount: Long,account: Account) = change("Dinero devuelto a ${account.label}") { repository.withdraw(g,amount,account,todayLabel()) }
+    fun deleteGoal(g: Goal) = change("Meta eliminada; aportes reservados devueltos") { repository.deleteGoal(g,todayLabel()) }
     suspend fun refreshRate() {
         if (loadingRate) return
         loadingRate = true
