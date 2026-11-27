@@ -27,7 +27,7 @@ Gradle no se pudo descargar aquí: `java.net.UnknownHostException: services.grad
 | A05 | Eliminar el gasto | Saldo personal vuelve a $2.500.000 |
 | A06 | Transferir $100.000 de Personal a Negocio | Saldos $2.400.000 y $2.465.000; total $4.865.000 |
 | A07 | Eliminar uno de los dos movimientos de transferencia | Se eliminan ambos y se restauran saldos |
-| A08 | Crear meta Reserva $1.000.000 y abonar $200.000 | 20 % de progreso; permanece tras reiniciar |
+| A08 | Crear meta Reserva $1.000.000 y abonar $200.000 | 20 % de progreso y saldo disponible $200.000 menor; permanece tras reiniciar |
 | A09 | Editar nombre y objetivo de la meta; intentar objetivo menor al aporte | Actualización válida; operación inválida deshabilitada |
 | A10 | Cambiar nombre y activar tema oscuro | Preferencias permanecen al reiniciar |
 | A11 | Buscar y filtrar ingresos/gastos | Lista correcta; no mezcla entornos |
