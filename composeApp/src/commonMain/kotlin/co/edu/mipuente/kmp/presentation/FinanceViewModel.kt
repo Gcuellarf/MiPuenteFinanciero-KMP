@@ -7,7 +7,6 @@ import co.edu.mipuente.kmp.navigation.*
 import co.edu.mipuente.kmp.platform.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.serialization.json.*
 
 class FinanceViewModel(private val repository: FinanceRepository) {
     var data by mutableStateOf(repository.read()); private set
@@ -39,9 +38,7 @@ class FinanceViewModel(private val repository: FinanceRepository) {
         if (loadingRate) return
         loadingRate = true
         try {
-            val obj = Json.parseToJsonElement(requestRateJson()).jsonObject
-            val value = obj["rates"]?.jsonObject?.get("COP")?.jsonPrimitive?.doubleOrNull
-            require(value != null && value.isFinite() && value > 0) { "Respuesta sin tasa COP" }
+            val value = parseCopRate(requestRateJson())
             rate = value; rateStatus = "Consulta en línea exitosa · referencia, no TRM oficial"
         } catch (e: TimeoutCancellationException) { rateStatus = "Tiempo de espera agotado. Vuelve a intentar." }
         catch (e: CancellationException) { throw e }
